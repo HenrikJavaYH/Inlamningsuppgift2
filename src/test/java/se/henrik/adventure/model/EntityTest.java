@@ -8,14 +8,13 @@ class EntityTest {
 
     @org.junit.jupiter.api.Test
     void punch() {
-        // Setup values
+        // Setup test
         Resident resident = new Resident("Resident", 10, 2);
         Burglar burglar = new Burglar("Burglar", 10, 3);
 
         // Do something
         resident.punch(burglar);
-
-
+        
         // Assert something
         Assertions.assertEquals(8, burglar.health);
         Assertions.assertEquals(10, resident.health);
