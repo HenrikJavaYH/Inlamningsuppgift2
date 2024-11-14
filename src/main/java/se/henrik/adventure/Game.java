@@ -1,10 +1,9 @@
 package se.henrik.adventure;
-
 import se.henrik.adventure.model.Burglar;
 import se.henrik.adventure.model.Entity;
 import se.henrik.adventure.model.Resident;
 
-import java.util.Scanner;
+import java.util.*;
 
 public class Game {
     Resident resident;
@@ -25,6 +24,7 @@ public class Game {
     private static final String KONTOR = "kontoret";
     private static final String START = "start";
     private static final String SLÅSS = "slåss";
+    private static final String STEKPANNA = "stekpanna";
     private static String currentlocation = START;
     private static boolean stekpannafunnen  = false;
     private static boolean isRunning  = true;
@@ -62,19 +62,26 @@ public class Game {
             case HALL -> gåTillHallen();
             case SOVRUM -> gåTillSovrummet();
             case SLÅSS -> slåss();
+            case STEKPANNA -> taStekpanna();
             default -> System.out.println("bad input");
         };
 
         return true;
     }
 
+    public void taStekpanna(){
+        if (currentlocation.equals(KÖK)) {
+            resident.setDamage(3);
+            stekpannafunnen = true;
+        } else {
+            System.out.println("Stekpannan kan hämtas i köket");
+        }
+    }
+
     public void gåTillKöket () {
         if (currentlocation.equals(VARDAGSRUM)) {
             if (!stekpannafunnen) {
                 System.out.println("Du är i köket, här finns det en stekpanna som går att använda som vapen! Skriv stekpanna för att plocka upp den!");
-                if (sc.nextLine().equals("stekpanna"))
-                resident.setDamage(3);
-                stekpannafunnen = true;
                 // +  3;
             }
             else {

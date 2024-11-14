@@ -14,7 +14,7 @@ class EntityTest {
 
         // Do something
         resident.punch(burglar);
-        
+
         // Assert something
         Assertions.assertEquals(8, burglar.health);
         Assertions.assertEquals(10, resident.health);
