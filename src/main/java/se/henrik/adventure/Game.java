@@ -25,12 +25,22 @@ public class Game {
     private static final String START = "start";
     private static final String SLÅSS = "slåss";
     private static final String STEKPANNA = "stekpanna";
+    private static final String POLISEN = "ring";
     private static String currentlocation = START;
     private static boolean stekpannafunnen  = false;
     private static boolean isRunning  = true;
+    private static boolean sover = true;
 
     public static void gåTillVardagsRummet() {
-        System.out.println("Du är i vardagsrummet, här finns soffa och tv");
+
+            if (sover) {
+                System.out.println("Du ligger och sover i vardagsrummet, " +
+                        "\nhär finns soffa och tv, du vaknar av ett ljud i hallen, bäst att du går o kollar vad det var för något");
+            } else {
+                System.out.println("Du är i vardagsrummet, här finns en soffa samt tv och tv-bord");
+            }
+            sover = false;
+
         currentlocation = VARDAGSRUM;
     }
 
@@ -47,6 +57,7 @@ public class Game {
         System.out.println("Vart vill du gå?");
         System.out.println("Skriv ett av följande ord för att gå till respektive plats:");
         System.out.println("vardagsrummet\nköket\nsovrummet\nhallen\nkontoret");
+        System.out.println("Ditt namn är Resident och din motståndares namn är Burglar");
     }
 
     public String getUserinput () {
@@ -63,6 +74,7 @@ public class Game {
             case SOVRUM -> gåTillSovrummet();
             case SLÅSS -> slåss();
             case STEKPANNA -> taStekpanna();
+            case POLISEN -> ringPolisen();
             default -> System.out.println("bad input");
         };
 
@@ -70,9 +82,10 @@ public class Game {
     }
 
     public void taStekpanna(){
-        if (currentlocation.equals(KÖK)) {
+        if (currentlocation.equals(KÖK) && !stekpannafunnen) {
             resident.setDamage(3);
             stekpannafunnen = true;
+            System.out.println("Stekpannan upplockad, nu kan du göra mer skada på tjuven!");
         } else {
             System.out.println("Stekpannan kan hämtas i köket");
         }
@@ -95,7 +108,7 @@ public class Game {
 
     public void gåTillSovrummet () {
         if (currentlocation.equals(VARDAGSRUM)) {
-            System.out.println("Du är i sovrummet, här finns det en säng och nattduksbord, vart vill du gå nu?");
+            System.out.println("Du är i sovrummet, här finns det en säng och nattduksbord");
             currentlocation = SOVRUM;
         } else {
             System.out.println("Du kan bara gå till sovrummet från vardagsrummet");
@@ -115,25 +128,30 @@ public class Game {
     public void gåTillHallen () {
         if (currentlocation.equals(VARDAGSRUM)) {
             System.out.println("Du är i hallen, en inbrottstjuv är här!");
-            System.out.println("Du måste slåss mot inrottstjuven, skriv slåss för att slåss, gå först till vardagsrummet och sedan köket och hämta stekpannan om du ej redan gjort det");
-            currentlocation = HALL;//if sats stekpanna
+            if (!stekpannafunnen) {
+                System.out.println("Du måste slåss mot inrottstjuven, skriv slåss för att slåss, " +
+                        "\ngå först till köket och hämta stekpannan för att göra mer skada på tjuven");
+            }
+            currentlocation = HALL;
         } else {
             System.out.println("Du kan bara gå till hallen från vardagsrummet");
         }
     }
 
     public void ringPolisen () {
-        isRunning = false;
+        if (currentlocation.equals(HALL) && !burglar.isConscious()) {
+            System.out.println("Polisen är underrättad och är på väg!");
+            isRunning = false;
+        }
     }
 
     public void gåTillKontor () {
         if (currentlocation.equals(VARDAGSRUM) && burglar.isConscious()) {
-            System.out.println("Du är på kontoret, här ser tomt ut förutom dator och bord, vart vill du gå nu?");
+            System.out.println("Du är på kontoret, här ser tomt ut förutom dator och skrivbord");
             currentlocation = HALL;
         } else if (currentlocation.equals(VARDAGSRUM) && !burglar.isConscious()) {
-            System.out.println("Här finns en telefon, nu ringer vi polisen!");
+            System.out.println("Här finns en telefon! skriv ring för att ringa polisen");
             currentlocation = HALL;
-            isRunning = false;
         } else {
             System.out.println("Du kan bara gå till kontoret från vardasgrummet");
         }
